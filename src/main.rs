@@ -1,3 +1,5 @@
+mod cmd;
+
 use {
     std:: {
         io,
@@ -12,6 +14,7 @@ use {
 };
 
 fn main() -> io::Result<()> {
+    let mut cmd = cmd::Cmd::new();
     terminal::enable_raw_mode()?;
     execute!(
         io::stdout(),
@@ -26,8 +29,10 @@ fn main() -> io::Result<()> {
             match event::read()? {
                 event::Event::Key(key) => {
                     match key.code {
-                        event::KeyCode::Char('q') => {
-                            break;
+                        event::KeyCode::Char(kc) => {
+                            if cmd.key(kc) == false {
+                                break;
+                            }
                         }
                         _ => {}
                     }
