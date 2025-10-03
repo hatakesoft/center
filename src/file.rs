@@ -1,7 +1,10 @@
 use {
     std:: {
         fs,
-        io,
+        io:: {
+            self,
+            BufRead,
+        },
     },
 };
 
@@ -21,7 +24,7 @@ impl File {
     pub fn get_content(&self) -> &Vec<String> { &self.content }
 
     pub fn read(&mut self) -> io::Result<()> {
-        let fh = match fs::File::open(self.path) {
+        let fh = match fs::File::open(&self.path) {
             Ok(file) => file,
             Err(e) => {
                 match e.kind() {
@@ -33,7 +36,7 @@ impl File {
                     }
                 }
             }
-        }
+        };
         let fh_br =  io::BufReader::new(fh);
         for line in fh_br.lines() {
             self.content.push(line?);

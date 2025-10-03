@@ -50,12 +50,12 @@ fn main() -> io::Result<()> {
                         _ => {}
                     }
                 }
-                event::Event::Resize(r, c) => {
-                    display.resize()?;
+                event::Event::Resize(_, _) => {
+                    display_handle.resize()?;
                 }
                 _ => {}
             }
-            display.print(&file);
+            display_handle.print(&file_handle)?;
         }
     }
 
