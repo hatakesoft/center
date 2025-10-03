@@ -1,7 +1,10 @@
 mod cmd;
+mod display;
+mod file;
 
 use {
     std:: {
+        env,
         io,
         time,
     },
@@ -15,6 +18,16 @@ use {
 
 fn main() -> io::Result<()> {
     let mut cmd = cmd::Cmd::new();
+    let mut display_handle = display::Display::new();
+    display_handle.resize()?;
+    let args: Vec<String> = env::args().collect();
+    let mut file_handle = file::File::new(
+        match args.get(1) {
+            Some(n) => n.clone(),
+            None => String::from("untitled"),
+        },
+    );
+    file_handle.read()?;
     terminal::enable_raw_mode()?;
     execute!(
         io::stdout(),
@@ -37,8 +50,12 @@ fn main() -> io::Result<()> {
                         _ => {}
                     }
                 }
+                event::Event::Resize(r, c) => {
+                    display.resize()?;
+                }
                 _ => {}
             }
+            display.print(&file);
         }
     }
 
