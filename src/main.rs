@@ -1,3 +1,6 @@
+//! # CONTENT
+//! main program
+
 mod cmd;
 mod display;
 mod file;
@@ -16,7 +19,15 @@ use {
     },
 };
 
+/// # CONTENT
+/// main program
+/// # ARGUMENT
+/// none
+/// # RETURN VALUE
+/// Ok(()): ok
+/// Err(...): error
 fn main() -> io::Result<()> {
+    // init variable
     let mut cmd = cmd::Cmd::new();
     let mut display_handle = display::Display::new();
     display_handle.resize()?;
@@ -28,6 +39,8 @@ fn main() -> io::Result<()> {
         },
     );
     file_handle.read()?;
+
+    // init display
     terminal::enable_raw_mode()?;
     execute!(
         io::stdout(),
@@ -59,11 +72,13 @@ fn main() -> io::Result<()> {
         }
     }
 
+    // post-processing
     terminal::disable_raw_mode()?;
     execute!(
         io::stdout(),
         cursor::Show,
         terminal::LeaveAlternateScreen,
     )?;
+
     Ok(())
 }
