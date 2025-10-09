@@ -62,12 +62,12 @@ impl Theme {
     pub fn default_dark() -> Self {
         Self {
             text: Color {
-                background: style::Color::Ansi(16),
-                foreground: style::Color::Ansi(231),
+                background: style::Color::AnsiValue(16),
+                foreground: style::Color::AnsiValue(231),
             },
             cursor: Color {
-                background: style::Color::Ansi(231),
-                foreground: style::Color::Ansi(16),
+                background: style::Color::AnsiValue(231),
+                foreground: style::Color::AnsiValue(16),
             },
         }
     }
@@ -81,12 +81,12 @@ impl Theme {
     pub fn default_light() -> Self {
         Self {
             text: Color {
-                background: style::Color::Ansi(231),
-                foreground: style::Color::Ansi(16),
+                background: style::Color::AnsiValue(231),
+                foreground: style::Color::AnsiValue(16),
             },
             cursor: Color {
-                background: style::Color::Ansi(16),
-                foreground: style::Color::Ansi(231),
+                background: style::Color::AnsiValue(16),
+                foreground: style::Color::AnsiValue(231),
             },
         }
     }
@@ -165,11 +165,11 @@ impl Display {
                 &content[0..self.col.into()]
             };
             if i == self.cursor_y {
-                print!("{}", print_str[0..self.cursor_x]);
+                print!("{}", print_str[0..(self.cursor_x as usize)]);
                 self.theme.cursor.set()?;
-                print!("{}", print_str[cursor_x..cursor_x + 1]);
+                print!("{}", print_str[self.cursor_x]);
                 self.theme.text.set()?;
-                println!("{}", print_str[self.cursor_x + 1..print_str.len()]);
+                println!("{}", print_str[(self.cursor_x as usize) + 1..print_str.len()]);
             } else {
                 println!("{}", print_str);
             }
