@@ -165,11 +165,11 @@ impl Display {
                 &content[0..self.col.into()]
             };
             if i == self.cursor_y {
-                print!("{}", print_str[0..(self.cursor_x as usize)]);
+                print!("{}", &print_str[0..(self.cursor_x as usize)]);
                 self.theme.cursor.set()?;
-                print!("{}", print_str[self.cursor_x]);
+                print!("{}", print_str[self.cursor_x as usize]);
                 self.theme.text.set()?;
-                println!("{}", print_str[(self.cursor_x as usize) + 1..print_str.len()]);
+                println!("{}", &print_str[(self.cursor_x as usize) + 1..print_str.len()]);
             } else {
                 println!("{}", print_str);
             }
