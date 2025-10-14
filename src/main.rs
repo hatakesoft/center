@@ -68,7 +68,7 @@ fn main() -> io::Result<()> {
                 }
                 _ => {}
             }
-            display_handle.print(&file_handle)?;
+            display_handle.print(&cmd, &file_handle)?;
         }
     }
 

@@ -125,7 +125,7 @@ impl Theme {
 /// - center_y: center pos y
 /// - theme: color theme
 pub struct Display {
-    col: usize;
+    col: usize,
     row: usize,
     center_x: usize,
     center_y: usize,
@@ -172,16 +172,16 @@ impl Display {
     /// Err(...): error
     pub fn print(&self, cmd_handle: &cmd::Cmd, file_handle: &file::File) -> io::Result<()> {
         let file_content = file_handle.get_content();
-        let code_top_num = self.center_y - (self.row - 4) / 2 + if (self.row - 4) % 2 == 0 { 1 } else { 0 };
-        let code_bottom_num = self.center_y + (self.row - 4) / 2;
+        let code_top_num = self.center_y as isize - (self.row as isize - 4) / 2 + if (self.row - 4) % 2 == 0 { 1 } else { 0 };
+        let code_bottom_num = self.center_y as isize + (self.row as isize - 4) / 2;
         let code_left = code_bottom_num.to_string().len();
         let code_right = self.col;
         let code_top = 2;
         let code_bottom = self.row - 2;
         let code_col = code_right - code_left;
         let code_row = code_bottom - code_top;
-        let code_left_num = self.center_x - code_col / 2 + if code_col % 2 == 0 { 1 } else { 0 };
-        let code_right_num = self.center_x + code_col / 2;
+        let code_left_num = self.center_x as isize - code_col as isize / 2 + if code_col % 2 == 0 { 1 } else { 0 };
+        let code_right_num = self.center_x as isize + code_col as isize / 2;
         execute!(
             io::stdout(),
             terminal::Clear(terminal::ClearType::All),
@@ -265,7 +265,7 @@ impl Display {
                 if content.len() < code_col - code_left_num.abs() {
                     &content
                 } else {
-                    &content[..code_col - code_left_num.abs()];
+                    &content[..code_col - code_left_num.abs()]
                 }
             } else {
                 if content.len() < code_right_num {
@@ -305,7 +305,7 @@ impl Display {
         } else if self.col > 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() {
             format!("center({}, {})", self.center_x + 1, self.center_y + 1)
         } else {
-            ""
+            "".to_string();
         });
 
         // cmd

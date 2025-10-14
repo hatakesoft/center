@@ -17,7 +17,7 @@ use {
 /// - path: file path
 /// - content: file content
 pub struct File {
-    path: String,
+    pub path: String,
     content: Vec<String>,
 }
 

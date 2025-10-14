@@ -7,7 +7,7 @@
 /// - cmd: cmd history
 pub struct Cmd {
     history: String,
-    buffer: String,
+    pub buffer: String,
 }
 
 impl Cmd {
@@ -19,7 +19,8 @@ impl Cmd {
     /// inited Cmd
     pub fn new() -> Self {
         Self {
-            cmd: String::new(),
+            history: String::new(),
+            buffer: String::new(),
         }
     }
 
@@ -33,8 +34,8 @@ impl Cmd {
     pub fn key(&mut self, key: char) -> bool {
         if key == 'q' {
             // quit program
-            buffer.push(key);
-            history.push(key);
+            self.buffer.push(key);
+            self.history.push(key);
             return false;
         } else {
             return true;
