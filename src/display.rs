@@ -210,11 +210,11 @@ impl Display {
             }
             print!("    "); // skip 0~3
             for i in 1..code_right_num / 5 {
-                if i * 5 - 1 == self.center_x {
+                if i * 5 - 1 == self.center_x.try_into().unwrap() {
                     self.theme.center_col.set()?;
                 }
                 print!("{:<5}", i * 5);
-                if i * 5 - 1 == self.center_x {
+                if i * 5 - 1 == self.center_x.try_into().unwrap() {
                     self.theme.col_num.set()?;
                 }
             }
@@ -223,11 +223,11 @@ impl Display {
                 print!(" ");
             }
             for i in code_left_num / 5 + 1..code_right_num / 5 {
-                if i * 5 - 1 == self.center_x.into() {
+                if i * 5 - 1 == self.center_x as isize {
                     self.theme.center_col.set()?;
                 }
                 print!("{:<5}", i * 5);
-                if i * 5 - 1 == self.center_x.into() {
+                if i * 5 - 1 == self.center_x as isize {
                     self.theme.col_num.set()?;
                 }
             }
@@ -250,7 +250,7 @@ impl Display {
 
             // row number
             self.theme.row_num.set()?;
-            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num + i }, width = code_left);
+            print!("{:>width$}", if code_top_num < 0 { i } else { (code_top_num + i).try_into().unwrap() }, width = code_left);
 
             // left space
             self.theme.space.set()?;
@@ -262,19 +262,19 @@ impl Display {
 
             // code
             let print_str = if code_left_num < 0 {
-                if content.len() < code_col - code_left_num.abs() {
+                if content.len() < code_col - code_left_num.abs().try_into().unwrap() {
                     &content
                 } else {
-                    &content[..code_col - code_left_num.abs()]
+                    &content[..code_col - code_left_num.abs().try_into().unwrap()]
                 }
             } else {
-                if content.len() < code_right_num {
-                    &content[code_left_num..]
+                if content.len() < code_right_num.try_into().unwrap() {
+                    &content[code_left_num.try_into().unwrap()..]
                 } else {
-                    &content[code_left_num..code_right_num]
+                    &content[code_left_num.try_into().unwrap()..code_right_num.try_into().unwarp()]
                 }
             };
-            if i == if code_top_num < 0 { i } else { code_top_num + i } {
+            if i == if code_top_num < 0 { i } else { (code_top_num + i).try_into().unwrap() } {
                 // center
                 if self.center_x >= content.len() {
                     panic!("center_x requested access outside the range");
@@ -292,7 +292,7 @@ impl Display {
 
         // bottom space
         self.theme.space.set()?;
-        if file_content.len() < code_bottom_num {
+        if file_content.len() < code_bottom_num.try_into().unwrap() {
             for _ in file_content.len()..code_bottom_num {
                 println!("");
             }
@@ -305,7 +305,7 @@ impl Display {
         } else if self.col > 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() {
             format!("center({}, {})", self.center_x + 1, self.center_y + 1)
         } else {
-            "".to_string();
+            "".to_string()
         });
 
         // cmd
@@ -313,7 +313,7 @@ impl Display {
         println!("{}", if cmd_handle.buffer.len() <= self.col {
             cmd_handle.buffer
         } else {
-            format!("..{}", cmd_handle.buffer[cmd_handle.buffer.len() - self.col + 2..])
+            format!("..{}", &cmd_handle.buffer[cmd_handle.buffer.len() - self.col + 2..])
         });
 
         execute!(
