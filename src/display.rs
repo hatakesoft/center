@@ -250,7 +250,7 @@ impl Display {
 
             // row number
             self.theme.row_num.set()?;
-            print!("{:>width$}", if code_top_num < 0 { i } else { (code_top_num + i).try_into().unwrap() }, width = code_left);
+            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num.try_into().unwrap() + i }, width = code_left);
 
             // left space
             self.theme.space.set()?;
@@ -271,10 +271,10 @@ impl Display {
                 if content.len() < code_right_num.try_into().unwrap() {
                     &content[code_left_num.try_into().unwrap()..]
                 } else {
-                    &content[code_left_num.try_into().unwrap()..code_right_num.try_into().unwarp()]
+                    &content[code_left_num.try_into().unwrap()..code_right_num.try_into().unwrap()]
                 }
             };
-            if i == if code_top_num < 0 { i } else { (code_top_num + i).try_into().unwrap() } {
+            if i == if code_top_num < 0 { i } else { code_top_num.try_into().unwrap() + i } {
                 // center
                 if self.center_x >= content.len() {
                     panic!("center_x requested access outside the range");
@@ -293,7 +293,7 @@ impl Display {
         // bottom space
         self.theme.space.set()?;
         if file_content.len() < code_bottom_num.try_into().unwrap() {
-            for _ in file_content.len()..code_bottom_num {
+            for _ in file_content.len()..code_bottom_num.try_into().unwrap() {
                 println!("");
             }
         }
