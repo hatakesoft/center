@@ -6,7 +6,8 @@
 /// # FIELD
 /// - cmd: cmd history
 pub struct Cmd {
-    cmd: String,
+    history: String,
+    buffer: String,
 }
 
 impl Cmd {
@@ -30,9 +31,10 @@ impl Cmd {
     /// - true: continue program
     /// - false: quit program
     pub fn key(&mut self, key: char) -> bool {
-        self.cmd.push(key);
         if key == 'q' {
             // quit program
+            buffer.push(key);
+            history.push(key);
             return false;
         } else {
             return true;
