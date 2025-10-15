@@ -196,7 +196,7 @@ impl Display {
         if file_handle.path.len() >= self.col {
             println!("{}", file_handle.path);
         } else {
-            println!("{}", &file_handle.path[file_handle.path.len() - self.col.into()..]);
+            println!("{}", &file_handle.path[file_handle.path.len() - self.col..]);
         }
 
         // col number
