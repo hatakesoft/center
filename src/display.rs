@@ -194,7 +194,11 @@ impl Display {
         // file path
         self.theme.file_path.set()?;
         if file_handle.path.len() <= self.col {
-            println!("{}", file_handle.path);
+            print!("{}", file_handle.path);
+            for _ in file_handle.path.len()..self.col {
+                print!(" ");
+            }
+            println!("");
         } else {
             println!("{}", &file_handle.path[file_handle.path.len() - self.col..]);
         }
@@ -205,7 +209,7 @@ impl Display {
             print!(" ");
         }
         if code_left_num <= 0 {
-            for _ in 0..code_left {
+            for _ in 0..code_left_num.abs() as usize {
                 print!(" ");
             }
             print!("    "); // skip 0~3
@@ -238,13 +242,16 @@ impl Display {
         self.theme.space.set()?;
         if code_top_num < 0 {
             for _ in 0..code_top_num.abs() {
+                for _ in 0..self.col {
+                    print!(" ");
+                }
                 println!("");
             }
         }
 
         let mut i = 0;
         for content in file_content {
-            if i > code_row {
+            if i > code_bottom_num {
                 break;
             }
 
@@ -263,13 +270,21 @@ impl Display {
             // code
             let print_str = if code_left_num < 0 {
                 if content.len() < code_col - code_left_num.abs() as usize {
-                    &content
+                    let mut _c = content.clone();
+                    for _ in content.len()..code_col - code_left_num.abs() as usize {
+                        _c.push(" ");
+                    }
+                    &_c
                 } else {
                     &content[..code_col - code_left_num.abs() as usize]
                 }
             } else {
                 if content.len() < code_right_num as usize {
-                    &content[code_left_num as usize..]
+                    _c = &content[code_left_num as usize..].to_string();
+                    for _ in content.len()..code_right_num as usize {
+                        _c.push(" ");
+                    }
+                    &_c
                 } else {
                     &content[code_left_num as usize..code_right_num as usize]
                 }
@@ -294,6 +309,9 @@ impl Display {
         self.theme.space.set()?;
         if file_content.len() < code_bottom_num as usize {
             for _ in file_content.len()..code_bottom_num as usize {
+                for _ in 0..self.col {
+                    print!(" ");
+                }
                 println!("");
             }
         }
@@ -301,17 +319,33 @@ impl Display {
         // bar
         self.theme.bar.set()?;
         println!("{}", if self.col > 23 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() + self.col.to_string().len() + self.row.to_string().len() {
-            format!("center({}, {})  display({}, {})", self.center_x + 1, self.center_y + 1, self.col, self.row)
+            _s = format!("center({}, {})  display({}, {})", self.center_x + 1, self.center_y + 1, self.col, self.row);
+            for _ in 23 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() + self.col.to_string().len() + self.row.to_string().len()..self.col {
+                _s.push(" ");
+            }
+            _s
         } else if self.col > 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() {
-            format!("center({}, {})", self.center_x + 1, self.center_y + 1)
+            _s = format!("center({}, {})", self.center_x + 1, self.center_y + 1);
+            for _ in 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len()..self.col {
+                _s.push(" ");
+            }
+            _s
         } else {
-            "".to_string()
+            _s = String::new();
+            for _ in 0..col {
+                _s.push(" ");
+            }
+            _s
         });
 
         // cmd
         self.theme.cmd.set()?;
         println!("{}", if cmd_handle.buffer.len() <= self.col {
-            cmd_handle.buffer.clone()
+            _c = cmd_handle.buffer.clone();
+            for _ in cmd_handle.buffer.len()..self.col {
+                _c.push(" ");
+            }
+            _c
         } else {
             format!("..{}", &cmd_handle.buffer[cmd_handle.buffer.len() - self.col + 2..])
         });
