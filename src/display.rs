@@ -250,7 +250,7 @@ impl Display {
 
             // row number
             self.theme.row_num.set()?;
-            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num.try_into().unwrap() + i }, width = code_left);
+            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num as usize + i }, width = code_left);
 
             // left space
             self.theme.space.set()?;
