@@ -274,7 +274,7 @@ impl Display {
                     &content[code_left_num as usize..code_right_num as usize]
                 }
             };
-            if i == if code_top_num < 0 { i } else { code_top_num + i } {
+            if self.center_y == if code_top_num < 0 { i as isize } else { code_top_num + i as isize } {
                 // center
                 if self.center_x >= content.len() {
                     panic!("center_x requested access outside the range");
