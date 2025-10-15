@@ -274,9 +274,9 @@ impl Display {
                     for _ in content.len()..code_col - code_left_num.abs() as usize {
                         _c.push(' ');
                     }
-                    &_c
+                    _c
                 } else {
-                    &content[..code_col - code_left_num.abs() as usize]
+                    &content[..code_col - code_left_num.abs() as usize].to_string();
                 }
             } else {
                 if content.len() < code_right_num as usize {
@@ -284,9 +284,9 @@ impl Display {
                     for _ in content.len()..code_right_num as usize {
                         _c.push(' ');
                     }
-                    &_c
+                    _c
                 } else {
-                    &content[code_left_num as usize..code_right_num as usize]
+                    &content[code_left_num as usize..code_right_num as usize].to_string()
                 }
             };
             if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } {
