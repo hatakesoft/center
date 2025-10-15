@@ -193,7 +193,7 @@ impl Display {
 
         // file path
         self.theme.file_path.set()?;
-        if file_handle.path.len() >= self.col {
+        if file_handle.path.len() <= self.col {
             println!("{}", file_handle.path);
         } else {
             println!("{}", &file_handle.path[file_handle.path.len() - self.col..]);
@@ -281,7 +281,7 @@ impl Display {
                 }
                 print!("{}", &print_str[..self.center_x]);
                 self.theme.center.set()?;
-                print!("{}", &print_str[self.center_x - 1..self.center_x]);
+                print!("{}", &print_str[self.center_x..self.center_x + 1]);
                 self.theme.code.set()?;
                 println!("{}", &print_str[self.center_x + 1..]);
             } else {
