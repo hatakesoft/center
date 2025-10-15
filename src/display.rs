@@ -251,7 +251,7 @@ impl Display {
 
         let mut i: usize = 0;
         for content in file_content {
-            if i > code_bottom_num {
+            if i > code_bottom_num as usize {
                 break;
             }
 
