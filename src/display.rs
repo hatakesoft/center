@@ -311,7 +311,7 @@ impl Display {
         // cmd
         self.theme.cmd.set()?;
         println!("{}", if cmd_handle.buffer.len() <= self.col {
-            cmd_handle.buffer
+            cmd_handle.buffer.clone()
         } else {
             format!("..{}", &cmd_handle.buffer[cmd_handle.buffer.len() - self.col + 2..])
         });
