@@ -276,7 +276,7 @@ impl Display {
                     }
                     _c
                 } else {
-                    &content[..code_col - code_left_num.abs() as usize].to_string();
+                    &content[..code_col - code_left_num.abs() as usize].to_string()
                 }
             } else {
                 if content.len() < code_right_num as usize {
