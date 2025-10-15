@@ -249,7 +249,7 @@ impl Display {
             }
         }
 
-        let mut i = 0;
+        let mut i: usize = 0;
         for content in file_content {
             if i > code_bottom_num {
                 break;
@@ -272,7 +272,7 @@ impl Display {
                 if content.len() < code_col - code_left_num.abs() as usize {
                     let mut _c = content.clone();
                     for _ in content.len()..code_col - code_left_num.abs() as usize {
-                        _c.push(" ");
+                        _c.push(' ');
                     }
                     &_c
                 } else {
@@ -280,9 +280,9 @@ impl Display {
                 }
             } else {
                 if content.len() < code_right_num as usize {
-                    _c = &content[code_left_num as usize..].to_string();
+                    let mut _c = &content[code_left_num as usize..].to_string();
                     for _ in content.len()..code_right_num as usize {
-                        _c.push(" ");
+                        _c.push(' ');
                     }
                     &_c
                 } else {
@@ -319,21 +319,21 @@ impl Display {
         // bar
         self.theme.bar.set()?;
         println!("{}", if self.col > 23 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() + self.col.to_string().len() + self.row.to_string().len() {
-            _s = format!("center({}, {})  display({}, {})", self.center_x + 1, self.center_y + 1, self.col, self.row);
+            let mut _s = format!("center({}, {})  display({}, {})", self.center_x + 1, self.center_y + 1, self.col, self.row);
             for _ in 23 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() + self.col.to_string().len() + self.row.to_string().len()..self.col {
-                _s.push(" ");
+                _s.push(' ');
             }
             _s
         } else if self.col > 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len() {
-            _s = format!("center({}, {})", self.center_x + 1, self.center_y + 1);
+            let mut _s = format!("center({}, {})", self.center_x + 1, self.center_y + 1);
             for _ in 10 + (self.center_x + 1).to_string().len() + (self.center_y + 1).to_string().len()..self.col {
-                _s.push(" ");
+                _s.push(' ');
             }
             _s
         } else {
-            _s = String::new();
-            for _ in 0..col {
-                _s.push(" ");
+            let mut _s = String::new();
+            for _ in 0..self.col {
+                _s.push(' ');
             }
             _s
         });
@@ -341,9 +341,9 @@ impl Display {
         // cmd
         self.theme.cmd.set()?;
         println!("{}", if cmd_handle.buffer.len() <= self.col {
-            _c = cmd_handle.buffer.clone();
+            let mut _c = cmd_handle.buffer.clone();
             for _ in cmd_handle.buffer.len()..self.col {
-                _c.push(" ");
+                _c.push(' ');
             }
             _c
         } else {
