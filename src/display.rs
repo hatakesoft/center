@@ -69,8 +69,8 @@ impl Theme {
     /// # RETURN VALUE
     /// Theme
     pub fn dracula() -> Self {
-        let bg = style::Color::Rgb {r: 0xF8, g: 0xF8, b: 0xF2};
-        let fg = style::Color::Rgb {r: 0x28, g: 0x2A, b: 0x36};
+        let bg = style::Color::Rgb {r: 0x28, g: 0x2A, b: 0x36};
+        let fg = style::Color::Rgb {r: 0xF8, g: 0xF8, b: 0xF2};
         Self {
             bar: Color {
                 background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
@@ -200,7 +200,7 @@ impl Display {
             }
             println!("");
         } else {
-            println!("{}", &file_handle.path[file_handle.path.len() - self.col..]);
+            println!("..{}", &file_handle.path[file_handle.path.len() - self.col + 2..]);
         }
 
         // col number
@@ -236,6 +236,9 @@ impl Display {
                 }
             }
         }
+        for _ in 0..code_right_num as usize % 5 {
+            print!(" ");
+        }
         println!("");
 
         // top space
@@ -260,10 +263,10 @@ impl Display {
             }
 
             // row number
-            if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } + 1 {
-                self.theme.row_num.set()?;
-            } else {
+            if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } {
                 self.theme.center_row.set()?;
+            } else {
+                self.theme.row_num.set()?;
             }
             print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num as usize + i } + 1, width = code_left);
 
@@ -308,6 +311,7 @@ impl Display {
                 self.theme.code.set()?;
                 println!("{}", &print_str[self.center_x + 1..]);
             } else {
+                self.theme.code.set()?;
                 println!("{}", print_str);
             }
             i += 1;
@@ -317,7 +321,10 @@ impl Display {
         self.theme.space.set()?;
         if file_content.len() < code_bottom_num as usize {
             for _ in file_content.len()..code_bottom_num as usize {
-                for _ in 0..self.col {
+                for _ in 0..code_left {
+                    print!(" ");
+                }
+                for _ in code_left..self.col {
                     print!(" ");
                 }
                 println!("");
