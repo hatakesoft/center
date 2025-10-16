@@ -280,13 +280,13 @@ impl Display {
                 }
             } else {
                 if content.len() < code_right_num as usize {
-                    let mut _c = &content[code_left_num as usize..].to_string();
+                    let mut _c = content[code_left_num as usize..].to_string();
                     for _ in content.len()..code_right_num as usize {
                         _c.push(' ');
                     }
                     _c
                 } else {
-                    &content[code_left_num as usize..code_right_num as usize].to_string()
+                    content[code_left_num as usize..code_right_num as usize].to_string()
                 }
             };
             if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } {
