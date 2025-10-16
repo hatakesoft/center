@@ -239,10 +239,14 @@ impl Display {
         println!("");
 
         // top space
-        self.theme.space.set()?;
         if code_top_num < 0 {
             for _ in 0..code_top_num.abs() {
-                for _ in 0..self.col {
+                self.theme.row_num.set()?;
+                for _ in 0..code_left {
+                    print!(" ");
+                }
+                self.theme.space.set()?;
+                for _ in 0..self.col - code_left {
                     print!(" ");
                 }
                 println!("");
@@ -256,8 +260,12 @@ impl Display {
             }
 
             // row number
-            self.theme.row_num.set()?;
-            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num as usize + i }, width = code_left);
+            if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } + 1 {
+                self.theme.row_num.set()?;
+            } else {
+                self.theme.center_row.set()?;
+            }
+            print!("{:>width$}", if code_top_num < 0 { i } else { code_top_num as usize + i } + 1, width = code_left);
 
             // left space
             self.theme.space.set()?;
