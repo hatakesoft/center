@@ -38,7 +38,7 @@ impl Cmd {
     }
 
     fn check(&mut self, cmd_msg: &str, key: char) -> bool {
-        let start = self.buffer.clone();
+        let mut start = self.buffer.clone();
         start.push(key);
         if cmd_msg.to_string().starts_with(&start) {
             self.buffer.push(key);
@@ -58,7 +58,7 @@ impl Cmd {
     /// # RETURN VALUE
     /// - true: continue program
     /// - false: quit program
-    pub fn key(&mut self, key: char, mut display_handle: &display::Display, file_handle: &file::File) -> bool {
+    pub fn key(&mut self, key: char, mut display_handle: &mut display::Display, file_handle: &file::File) -> bool {
         if self.check(CMD_CENTER_DOWN, key) {
             if display_handle.center_y != file_handle.content.len() {
                 display_handle.center_y += 1;
