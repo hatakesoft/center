@@ -127,8 +127,8 @@ impl Theme {
 pub struct Display {
     col: usize,
     row: usize,
-    center_x: usize,
-    center_y: usize,
+    pub center_x: usize,
+    pub center_y: usize,
     theme: Theme,
 }
 

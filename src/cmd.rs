@@ -1,6 +1,19 @@
 //! # CONTENT
 //! cmd-related programs
 
+use {
+    crate:: {
+        display,
+        file,
+    }
+};
+
+const CMD_CENTER_DOWN: &str = "j";
+const CMD_CENTER_LEFT: &str = "h";
+const CMD_CENTER_RIGHT: &str = "k";
+const CMD_CENTER_UP: &str = "i";
+const CMD_QUIT: &str = "q";
+
 /// # CONTENT
 /// cmd info
 /// # FIELD
@@ -24,6 +37,20 @@ impl Cmd {
         }
     }
 
+    fn check(&mut self, cmd_msg: &str) -> bool {
+        let start = self.buffer.clone();
+        start.push(key);
+        if cmd_msg.to_string().starts_with(start) {
+            self.buffer.push(key);
+            if cmd_msg.to_string() == start {
+                self.history += self.buffer;
+                self.buffer = String::new();
+                return true;
+            }
+        }
+        false
+    }
+
     /// # CONTENT
     /// execute cmd
     /// # ARGUMENT
@@ -31,14 +58,33 @@ impl Cmd {
     /// # RETURN VALUE
     /// - true: continue program
     /// - false: quit program
-    pub fn key(&mut self, key: char) -> bool {
-        if key == 'q' {
-            // quit program
-            self.buffer.push(key);
-            self.history.push(key);
+    pub fn key(&mut self, key: char, mut display_handle: &display::Display, file_handle: &file::File) -> bool {
+        if check(CMD_CENTER_DOWN) {
+            if display_handle.center_y != file_handle.content.len() {
+                display_handle.center_y += 1;
+                if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
+                    display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
+                }
+            }
+        } else if check(CMD_CENTER_LEFT) {
+            if display_handle.center_x < file_handle.content[display_handle.center_y].len() - 1 {
+                display_handle.center_x += 1;
+            }
+        } else if check(CMD_CENTER_RIGHT) {
+            if display_handle.center_x != 0 {
+                display_handle.center_x -= 1;
+            }
+        } else if check(CMD_CENTER_UP) {
+            if display_handle.center_y != 0 {
+                display_handle.center_y -= 1;
+                if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
+                    display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
+                }
+            }
+        } else if check(CMD_QUIT) {
             return false;
-        } else {
-            return true;
         }
+
+        true
     }
 }

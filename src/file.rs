@@ -18,7 +18,7 @@ use {
 /// - content: file content
 pub struct File {
     pub path: String,
-    content: Vec<String>,
+    pub content: Vec<String>,
 }
 
 impl File {
