@@ -51,25 +51,23 @@ fn main() -> io::Result<()> {
     )?;
 
     loop {
-        if event::poll(time::Duration::from_millis(100))? {
-            match event::read()? {
-                event::Event::Key(key) => {
-                    match key.code {
-                        event::KeyCode::Char(kc) => {
-                            if cmd.key(kc, &mut display_handle, &file_handle) == false {
-                                break;
-                            }
+        match event::read()? {
+            event::Event::Key(key) => {
+                match key.code {
+                    event::KeyCode::Char(kc) => {
+                        if cmd.key(kc, &mut display_handle, &file_handle) == false {
+                            break;
                         }
-                        _ => {}
                     }
+                    _ => {}
                 }
-                event::Event::Resize(_, _) => {
-                    display_handle.resize()?;
-                }
-                _ => {}
             }
-            display_handle.print(&cmd, &file_handle)?;
+            event::Event::Resize(_, _) => {
+                display_handle.resize()?;
+            }
+            _ => {}
         }
+        display_handle.print(&cmd, &file_handle)?;
     }
 
     // post-processing

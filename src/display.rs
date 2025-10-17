@@ -236,6 +236,7 @@ impl Display {
                 }
             }
         }
+        self.theme.col_num.set()?;
         for _ in 0..code_right_num as usize % 5 {
             print!(" ");
         }
@@ -318,12 +319,13 @@ impl Display {
         }
 
         // bottom space
-        self.theme.space.set()?;
         if file_content.len() < code_bottom_num as usize {
             for _ in file_content.len()..code_bottom_num as usize {
+                self.theme.row_num.set();
                 for _ in 0..code_left {
                     print!(" ");
                 }
+                self.theme.space.set()?;
                 for _ in code_left..self.col {
                     print!(" ");
                 }
