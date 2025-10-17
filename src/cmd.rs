@@ -37,13 +37,13 @@ impl Cmd {
         }
     }
 
-    fn check(&mut self, cmd_msg: &str) -> bool {
+    fn check(&mut self, cmd_msg: &str, key: char) -> bool {
         let start = self.buffer.clone();
         start.push(key);
-        if cmd_msg.to_string().starts_with(start) {
+        if cmd_msg.to_string().starts_with(&start) {
             self.buffer.push(key);
             if cmd_msg.to_string() == start {
-                self.history += self.buffer;
+                self.history += &self.buffer;
                 self.buffer = String::new();
                 return true;
             }
@@ -59,29 +59,29 @@ impl Cmd {
     /// - true: continue program
     /// - false: quit program
     pub fn key(&mut self, key: char, mut display_handle: &display::Display, file_handle: &file::File) -> bool {
-        if check(CMD_CENTER_DOWN) {
+        if self.check(CMD_CENTER_DOWN, key) {
             if display_handle.center_y != file_handle.content.len() {
                 display_handle.center_y += 1;
                 if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
                     display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
                 }
             }
-        } else if check(CMD_CENTER_LEFT) {
+        } else if self.check(CMD_CENTER_LEFT, key) {
             if display_handle.center_x < file_handle.content[display_handle.center_y].len() - 1 {
                 display_handle.center_x += 1;
             }
-        } else if check(CMD_CENTER_RIGHT) {
+        } else if self.check(CMD_CENTER_RIGHT, key) {
             if display_handle.center_x != 0 {
                 display_handle.center_x -= 1;
             }
-        } else if check(CMD_CENTER_UP) {
+        } else if self.check(CMD_CENTER_UP, key) {
             if display_handle.center_y != 0 {
                 display_handle.center_y -= 1;
                 if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
                     display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
                 }
             }
-        } else if check(CMD_QUIT) {
+        } else if self.check(CMD_QUIT, key) {
             return false;
         }
 
