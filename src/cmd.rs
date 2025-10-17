@@ -58,7 +58,7 @@ impl Cmd {
     /// # RETURN VALUE
     /// - true: continue program
     /// - false: quit program
-    pub fn key(&mut self, key: char, mut display_handle: &mut display::Display, file_handle: &file::File) -> bool {
+    pub fn key(&mut self, key: char, display_handle: &mut display::Display, file_handle: &file::File) -> bool {
         if self.check(CMD_CENTER_DOWN, key) {
             if display_handle.center_y != file_handle.content.len() {
                 display_handle.center_y += 1;
