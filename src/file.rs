@@ -50,7 +50,7 @@ impl File {
     /// # RETURN VALUE
     /// Ok(()): ok
     pub fn read(&mut self) -> io::Result<()> {
-        match self.path {
+        match self.path.clone() {
             Some(n) => {
                 let fh = fs::File::open(&n)?;
                 let fh_br =  io::BufReader::new(fh);

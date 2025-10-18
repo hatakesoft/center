@@ -9,7 +9,6 @@ use {
     std:: {
         env,
         io,
-        time,
     },
     crossterm:: {
         cursor,
