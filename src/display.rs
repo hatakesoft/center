@@ -240,15 +240,15 @@ impl Display {
             terminal::Clear(terminal::ClearType::All),
             cursor::MoveTo(0, 0),
         )?;
+        if self.row < 5 {
+            return Ok(());
+        }
         if self.center_y >= file_content.len() {
             panic!("center_y requested access outside the range");
         }
 
         // file path
-        let file_path = match file_handle.path {
-            Some(n) => n.clone(),
-            None => "".to_string(),
-        };
+        let file_path = file_handle.path.clone().unwrap_or_default();
         self.theme.file_path.set()?;
         if file_path.len() <= self.col {
             print!("{}", file_path);
