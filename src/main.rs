@@ -32,12 +32,7 @@ fn main() -> io::Result<()> {
     let mut display_handle = display::Display::new();
     display_handle.resize()?;
     let args: Vec<String> = env::args().collect();
-    let mut file_handle = file::File::new(
-        match args.get(1) {
-            Some(n) => n.clone(),
-            None => String::from("untitled"),
-        },
-    );
+    let mut file_handle = file::File::new(args.get(1));
     file_handle.read()?;
 
     // init display
@@ -56,6 +51,11 @@ fn main() -> io::Result<()> {
                 match key.code {
                     event::KeyCode::Char(kc) => {
                         if cmd.key(kc, &mut display_handle, &file_handle) == false {
+                            break;
+                        }
+                    }
+                    event::KeyCode::Backspace => {
+                        if cmd.key('\b', &mut display_handle, &file_handle) == false {
                             break;
                         }
                     }

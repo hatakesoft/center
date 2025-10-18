@@ -8,11 +8,13 @@ use {
     }
 };
 
-const CMD_CENTER_DOWN: &str = "j";
-const CMD_CENTER_LEFT: &str = "h";
-const CMD_CENTER_RIGHT: &str = "k";
-const CMD_CENTER_UP: &str = "i";
-const CMD_QUIT: &str = "q";
+const CMD_CENTER_DOWN:               &str = "j";
+const CMD_CENTER_LEFT:               &str = "h";
+const CMD_CENTER_RIGHT:              &str = "k";
+const CMD_CENTER_UP:                 &str = "i";
+const CMD_QUIT:                      &str = "q";
+const CMD_THEME_CHANGE_TO_ONE_DARK:  &str = "t:one_dark";
+const CMD_THEME_CHANGE_TO_ONE_LIGHT: &str = "t:one_light";
 
 /// # CONTENT
 /// cmd info
@@ -59,20 +61,22 @@ impl Cmd {
     /// - true: continue program
     /// - false: quit program
     pub fn key(&mut self, key: char, display_handle: &mut display::Display, file_handle: &file::File) -> bool {
-        if self.check(CMD_CENTER_DOWN, key) {
+        if key == '\b' { // reset buffer
+            self.buffer = String::new();
+        } else if self.check(CMD_CENTER_DOWN, key) {
             if display_handle.center_y != file_handle.content.len() {
                 display_handle.center_y += 1;
-                if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
-                    display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
+                if display_handle.center_x > file_handle.content[display_handle.center_y].len() {
+                    display_handle.center_x = file_handle.content[display_handle.center_y].len();
                 }
             }
         } else if self.check(CMD_CENTER_LEFT, key) {
-            if display_handle.center_x < file_handle.content[display_handle.center_y].len() - 1 {
-                display_handle.center_x += 1;
-            }
-        } else if self.check(CMD_CENTER_RIGHT, key) {
             if display_handle.center_x != 0 {
                 display_handle.center_x -= 1;
+            }
+        } else if self.check(CMD_CENTER_RIGHT, key) {
+            if display_handle.center_x < file_handle.content[display_handle.center_y].len() {
+                display_handle.center_x += 1;
             }
         } else if self.check(CMD_CENTER_UP, key) {
             if display_handle.center_y != 0 {
@@ -83,6 +87,10 @@ impl Cmd {
             }
         } else if self.check(CMD_QUIT, key) {
             return false;
+        } else if self.check(CMD_THEME_ONE_DARK, key) {
+            display_handle.theme = display::Theme::one_dark();
+        } else if self.check(CMD_THEME_ONE_LIGHT, key) {
+            display_handle.theme = display::Theme::one_light();
         }
 
         true

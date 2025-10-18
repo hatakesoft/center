@@ -63,29 +63,82 @@ pub struct Theme {
 
 impl Theme {
     /// # CONTENT
-    /// get dracula theme
+    /// get one dark theme
     /// # ARGUMENT
     /// none
     /// # RETURN VALUE
     /// Theme
-    pub fn dracula() -> Self {
-        let bg = style::Color::Rgb {r: 0x28, g: 0x2A, b: 0x36};
-        let fg = style::Color::Rgb {r: 0xF8, g: 0xF8, b: 0xF2};
+    pub fn one_dark() -> Self {
+        let bg = style::Color::Rgb {r: 0x28, g: 0x2C, b: 0x34};
+        let fg = style::Color::Rgb {r: 0xAB, g: 0xB2, b: 0xBF};
         Self {
             bar: Color {
-                background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
-                foreground: fg,
+                background: style::Color::Rgb {r: 0x21, g: 0x25, b: 0x2B},
+                foreground: style::Color::Rgb {r: 0x9D, g: 0xA5, b: 0xB4},
             },
             center: Color {
-                background: fg,
+                background: style::Color::Rgb {r: 0x52, g: 0x8B, b: 0xFF},
+                foreground: fg,
+            },
+            center_col: Color {
+                background: bg,
+                foreground: style::Color::Rgb {r: 0xAB, g: 0xB2, b: 0xBF},
+            },
+            center_row: Color {
+                background: bg,
+                foreground: style::Color::Rgb {r: 0xAB, g: 0xB2, b: 0xBF},
+            },
+            cmd: Color {
+                background: bg,
+                foreground: fg,
+            },
+            code: Color {
+                background: bg,
+                foreground: fg,
+            },
+            col_num: Color {
+                background: bg,
+                foreground: style::Color::Rgb {r: 0x63, g: 0x6D, b: 0x83},
+            },
+            file_path: Color {
+                background: style::Color::Rgb {r: 0x21, g: 0x25, b: 0x2B},
+                foreground: style::Color::Rgb {r: 0x9D, g: 0xA5, b: 0xB4},
+            },
+            row_num: Color {
+                background: bg,
+                foreground: style::Color::Rgb {r: 0x63, g: 0x6D, b: 0x83},
+            },
+            space: Color {
+                background: style::Color::Rgb {r: 0x21, g: 0x25, b: 0x2B},
+                foreground: style::Color::Rgb {r: 0x21, g: 0x25, b: 0x2B},
+            },
+        }
+    }
+
+    /// # CONTENT
+    /// get one light theme
+    /// # ARGUMENT
+    /// none
+    /// # RETURN VALUE
+    /// Theme
+    pub fn one_light() -> Self {
+        let bg = style::Color::Rgb {r: 0xFA, g: 0xFA, b: 0xFA};
+        let fg = style::Color::Rgb {r: 0x38, g: 0x3A, b: 0x42};
+        Self {
+            bar: Color {
+                background: style::Color::Rgb {r: 0xEA, g: 0xEA, b: 0xEB},
+                foreground: style::Color::Rgb {r: 0x42, g: 0x42, b: 0x43},
+            },
+            center: Color {
+                background: style::Color::Rgb {r: 0x52, g: 0x6F, b: 0xFF},
                 foreground: bg,
             },
             center_col: Color {
-                background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
+                background: bg,
                 foreground: fg,
             },
             center_row: Color {
-                background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
+                background: bg,
                 foreground: fg,
             },
             cmd: Color {
@@ -97,20 +150,20 @@ impl Theme {
                 foreground: fg,
             },
             col_num: Color {
-                background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
-                foreground: style::Color::Rgb {r: 0x62, g: 0x72, b: 0xA4},
+                background: bg,
+                foreground: style::Color::Rgb {r: 0x9D, g: 0x9D, b: 0x9F},
             },
             file_path: Color {
-                background: style::Color::Rgb {r: 0x44, g: 0x47, b: 0x5A},
-                foreground: fg,
+                background: style::Color::Rgb {r: 0xEA, g: 0xEA, b: 0xEB},
+                foreground: style::Color::Rgb {r: 0x42, g: 0x42, b: 0x43},
             },
             row_num: Color {
-                background: style::Color::Rgb {r: 0x19, g: 0x1A, b: 0x21},
-                foreground: style::Color::Rgb {r: 0x62, g: 0x72, b: 0xA4},
+                background: bg,
+                foreground: style::Color::Rgb {r: 0x9D, g: 0x9D, b: 0x9F},
             },
             space: Color {
-                background: style::Color::Rgb {r: 0x21, g: 0x22, b: 0x2C},
-                foreground: fg,
+                background: style::Color::Rgb {r: 0xEA, g: 0xEA, b: 0xEB},
+                foreground: style::Color::Rgb {r: 0xEA, g: 0xEA, b: 0xEB},
             },
         }
     }
@@ -129,7 +182,7 @@ pub struct Display {
     row: usize,
     pub center_x: usize,
     pub center_y: usize,
-    theme: Theme,
+    pub theme: Theme,
 }
 
 impl Display {
@@ -145,7 +198,7 @@ impl Display {
             row: 0,
             center_x: 0,
             center_y: 0,
-            theme: Theme::dracula(),
+            theme: Theme::one_light(),
         }
     }
 
@@ -192,15 +245,19 @@ impl Display {
         }
 
         // file path
+        let file_path = match file_handle.path {
+            Some(n) => n,
+            None => "".to_string(),
+        }
         self.theme.file_path.set()?;
-        if file_handle.path.len() <= self.col {
-            print!("{}", file_handle.path);
-            for _ in file_handle.path.len()..self.col {
+        if file_path.len() <= self.col {
+            print!("{}", file_path);
+            for _ in file_path.len()..self.col {
                 print!(" ");
             }
             println!("");
         } else {
-            println!("..{}", &file_handle.path[file_handle.path.len() - self.col + 2..]);
+            println!("..{}", &file_path[file_path.len() - self.col + 2..]);
         }
 
         // col number
@@ -303,14 +360,16 @@ impl Display {
             };
             if self.center_y == if code_top_num < 0 { i } else { code_top_num as usize + i } {
                 // center
-                if self.center_x >= content.len() {
+                if self.center_x < content.len() {
+                    self.theme.code.set()?;
+                    print!("{}", &print_str[..self.center_x]);
+                    self.theme.center.set()?;
+                    print!("{}", &print_str[self.center_x..self.center_x + 1]);
+                    self.theme.code.set()?;
+                    println!("{}", &print_str[self.center_x + 1..]);
+                } else if self.center_x > content.len() {
                     panic!("center_x requested access outside the range");
                 }
-                print!("{}", &print_str[..self.center_x]);
-                self.theme.center.set()?;
-                print!("{}", &print_str[self.center_x..self.center_x + 1]);
-                self.theme.code.set()?;
-                println!("{}", &print_str[self.center_x + 1..]);
             } else {
                 self.theme.code.set()?;
                 println!("{}", print_str);
