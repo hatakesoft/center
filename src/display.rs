@@ -246,7 +246,7 @@ impl Display {
 
         // file path
         let file_path = match file_handle.path {
-            Some(n) => n.clone,
+            Some(n) => n.clone(),
             None => "".to_string(),
         };
         self.theme.file_path.set()?;
