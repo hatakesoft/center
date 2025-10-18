@@ -245,10 +245,10 @@ impl Display {
         }
 
         // file path
-        let file_path = match file_handle.path {
+        let file_path = match &file_handle.path {
             Some(n) => n,
             None => "".to_string(),
-        }
+        };
         self.theme.file_path.set()?;
         if file_path.len() <= self.col {
             print!("{}", file_path);

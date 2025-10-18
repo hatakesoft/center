@@ -61,7 +61,7 @@ impl Cmd {
     /// - true: continue program
     /// - false: quit program
     pub fn key(&mut self, key: char, display_handle: &mut display::Display, file_handle: &file::File) -> bool {
-        if key == '\b' { // reset buffer
+        if key == '\x08' { // reset buffer
             self.buffer = String::new();
         } else if self.check(CMD_CENTER_DOWN, key) {
             if display_handle.center_y != file_handle.content.len() {
@@ -87,9 +87,9 @@ impl Cmd {
             }
         } else if self.check(CMD_QUIT, key) {
             return false;
-        } else if self.check(CMD_THEME_ONE_DARK, key) {
+        } else if self.check(CMD_THEME_CHANGE_TO_ONE_DARK, key) {
             display_handle.theme = display::Theme::one_dark();
-        } else if self.check(CMD_THEME_ONE_LIGHT, key) {
+        } else if self.check(CMD_THEME_CHANGE_TO_ONE_LIGHT, key) {
             display_handle.theme = display::Theme::one_light();
         }
 

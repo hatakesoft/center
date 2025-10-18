@@ -52,7 +52,7 @@ impl File {
     pub fn read(&mut self) -> io::Result<()> {
         match self.path {
             Some(n) => {
-                let fh = match fs::File::open(&self.path)?;
+                let fh = match fs::File::open(&n)?;
                 let fh_br =  io::BufReader::new(fh);
                 for line in fh_br.lines() {
                     self.content.push(line?);
