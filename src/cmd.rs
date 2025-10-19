@@ -9,6 +9,8 @@ use {
 };
 
 const CMD_APPEND:                    &str = "a";
+const CMD_BACKSPACE_LEFT:            &str = "b";
+const CMD_BACKSPACE_RIGHT:           &str = "B";
 const CMD_CENTER_DOWN:               &str = "j";
 const CMD_CENTER_END_FILE:           &str = "J";
 const CMD_CENTER_END_LINE:           &str = "K";
@@ -18,7 +20,7 @@ const CMD_CENTER_START_FILE:         &str = "I";
 const CMD_CENTER_START_LINE:         &str = "H";
 const CMD_CENTER_UP:                 &str = "i";
 const CMD_QUIT:                      &str = "q";
-const CMD_REPLACE                    &str = "r";
+const CMD_REPLACE:                   &str = "r";
 const CMD_THEME_CHANGE_TO_ONE_DARK:  &str = "t:one_dark";
 const CMD_THEME_CHANGE_TO_ONE_LIGHT: &str = "t:one_light";
 
@@ -92,6 +94,16 @@ impl Cmd {
                 } else if self.check(CMD_APPEND, key) {
                     file_handle.content[display_handle.center_y].insert(display_handle.center_x, ' ');
                     self.mode = Mode::Append;
+                } else if self.check(CMD_BACKSPACE_LEFT, key) {
+                    file_handle.content[display_handle.center_y].remove(display_handle.center_x);
+                    if display_handle.center_x > 0 {
+                        display_handle.center_x -= 1;
+                    }
+                } else if self.check(CMD_BACKSPACE_RIGHT, key) {
+                    file_handle.content[display_handle.center_y].remove(display_handle.center_x);
+                    if display_handle.center_x > file_handle.content[display_handle.center_y].len() {
+                        display_handle.center_x = file_handle.content[display_handle.center_y].len();
+                    }
                 } else if self.check(CMD_CENTER_DOWN, key) {
                     if display_handle.center_y != file_handle.content.len() {
                         display_handle.center_y += 1;
