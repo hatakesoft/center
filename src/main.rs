@@ -53,8 +53,8 @@ fn main() -> io::Result<()> {
                             break;
                         }
                     }
-                    event::KeyCode::Backspace => {
-                        if cmd.key('\x08', &mut display_handle, &file_handle) == false {
+                    event::KeyCode::Enter => {
+                        if cmd.key('\n', &mut display_handle, &mut file_handle) == false {
                             break;
                         }
                     }

@@ -8,13 +8,25 @@ use {
     }
 };
 
+const CMD_APPEND:                    &str = "a";
 const CMD_CENTER_DOWN:               &str = "j";
+const CMD_CENTER_END_FILE:           &str = "J";
+const CMD_CENTER_END_LINE:           &str = "K";
 const CMD_CENTER_LEFT:               &str = "h";
 const CMD_CENTER_RIGHT:              &str = "k";
+const CMD_CENTER_START_FILE:         &str = "I";
+const CMD_CENTER_START_LINE:         &str = "H";
 const CMD_CENTER_UP:                 &str = "i";
 const CMD_QUIT:                      &str = "q";
+const CMD_REPLACE                    &str = "r";
 const CMD_THEME_CHANGE_TO_ONE_DARK:  &str = "t:one_dark";
 const CMD_THEME_CHANGE_TO_ONE_LIGHT: &str = "t:one_light";
+
+enum Mode {
+    Append,
+    Default,
+    Replace,
+}
 
 /// # CONTENT
 /// cmd info
@@ -23,6 +35,7 @@ const CMD_THEME_CHANGE_TO_ONE_LIGHT: &str = "t:one_light";
 pub struct Cmd {
     history: String,
     pub buffer: String,
+    mode: Mode,
 }
 
 impl Cmd {
@@ -36,6 +49,7 @@ impl Cmd {
         Self {
             history: String::new(),
             buffer: String::new(),
+            mode: Mode::Default,
         }
     }
 
@@ -60,37 +74,79 @@ impl Cmd {
     /// # RETURN VALUE
     /// - true: continue program
     /// - false: quit program
-    pub fn key(&mut self, key: char, display_handle: &mut display::Display, file_handle: &file::File) -> bool {
-        if key == '\x08' { // reset buffer
-            self.buffer = String::new();
-        } else if self.check(CMD_CENTER_DOWN, key) {
-            if display_handle.center_y != file_handle.content.len() {
-                display_handle.center_y += 1;
-                if display_handle.center_x > file_handle.content[display_handle.center_y].len() {
+    pub fn key(&mut self, key: char, display_handle: &mut display::Display, file_handle: &mut file::File) -> bool {
+        match self.mode.clone() {
+            Mode::Append => {
+                self.buffer.push(key);
+                if key == '\n' {
+                    file_handle.content[display_handle.center_y].remove(display_handle.center_x);
+                    self.history += &self.buffer;
+                } else {
+                    file_handle.content[display_handle.center_y].insert(display_handle.center_x, key);
+                    display_handle.center_x += 1;
+                }
+            }
+            Mode::Default => {
+                if key == '\n' { // reset buffer
+                    self.buffer = String::new();
+                } else if self.check(CMD_APPEND, key) {
+                    file_handle.content[display_handle.center_y].insert(display_handle.center_x, ' ');
+                    self.mode = Mode::Append;
+                } else if self.check(CMD_CENTER_DOWN, key) {
+                    if display_handle.center_y != file_handle.content.len() {
+                        display_handle.center_y += 1;
+                        if display_handle.center_x > file_handle.content[display_handle.center_y].len() {
+                            display_handle.center_x = file_handle.content[display_handle.center_y].len();
+                        }
+                    }
+                } else if self.check(CMD_CENTER_END_FILE, key) {
+                    display_handle.center_y = file_handle.content.len() - 1;
                     display_handle.center_x = file_handle.content[display_handle.center_y].len();
+                } else if self.check(CMD_CENTER_END_LINE, key) {
+                    display_handle.center_x = file_handle.content[display_handle.center_y].len();
+                } else if self.check(CMD_CENTER_LEFT, key) {
+                    if display_handle.center_x != 0 {
+                        display_handle.center_x -= 1;
+                    }
+                } else if self.check(CMD_CENTER_RIGHT, key) {
+                    if display_handle.center_x < file_handle.content[display_handle.center_y].len() {
+                        display_handle.center_x += 1;
+                    }
+                } else if self.check(CMD_CENTER_START_FILE, key) {
+                    display_handle.center_x = 0;
+                    display_handle.center_y = 0;
+                } else if self.check(CMD_CENTER_START_LINE, key) {
+                    display_handle.center_x = 0;
+                } else if self.check(CMD_CENTER_UP, key) {
+                    if display_handle.center_y != 0 {
+                        display_handle.center_y -= 1;
+                        if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
+                            display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
+                        }
+                    }
+                } else if self.check(CMD_QUIT, key) {
+                    return false;
+                } else if self.check(CMD_REPLACE, key) {
+                    file_handle.content[display_handle.center_y][display_handle.center_x] = ' ';
+                    self.mode = Mode::Replace;
+                } else if self.check(CMD_THEME_CHANGE_TO_ONE_DARK, key) {
+                    display_handle.theme = display::Theme::one_dark();
+                } else if self.check(CMD_THEME_CHANGE_TO_ONE_LIGHT, key) {
+                    display_handle.theme = display::Theme::one_light();
                 }
             }
-        } else if self.check(CMD_CENTER_LEFT, key) {
-            if display_handle.center_x != 0 {
-                display_handle.center_x -= 1;
-            }
-        } else if self.check(CMD_CENTER_RIGHT, key) {
-            if display_handle.center_x < file_handle.content[display_handle.center_y].len() {
-                display_handle.center_x += 1;
-            }
-        } else if self.check(CMD_CENTER_UP, key) {
-            if display_handle.center_y != 0 {
-                display_handle.center_y -= 1;
-                if display_handle.center_x >= file_handle.content[display_handle.center_y].len() {
-                    display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
+            Mode::Replace => {
+                if key == '\n' {
+                    file_handle.content[display_handle.center_y].remove(display_handle.center_x);
+                    self.buffer.push(key);
+                    self.history += &self.buffer;
+                } else {
+                    file_handle.content[display_handle.center_y][display_handle.center_x] = key;
+                    self.buffer.push(key);
+                    self.history += &self.buffer;
                 }
+                self.mode = Mode::Default;
             }
-        } else if self.check(CMD_QUIT, key) {
-            return false;
-        } else if self.check(CMD_THEME_CHANGE_TO_ONE_DARK, key) {
-            display_handle.theme = display::Theme::one_dark();
-        } else if self.check(CMD_THEME_CHANGE_TO_ONE_LIGHT, key) {
-            display_handle.theme = display::Theme::one_light();
         }
 
         true
