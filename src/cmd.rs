@@ -139,7 +139,7 @@ impl Cmd {
                         }
                     }
                 } else if self.check(CMD_NEWLINE, key) {
-                    file_handle.content.insert(display_handle.center_y + 1, file_handle.content[display_handle.center_y][display_handle.center_x..]);
+                    file_handle.content.insert(display_handle.center_y + 1, file_handle.content[display_handle.center_y][display_handle.center_x..].to_string());
                     file_handle.content[display_handle.center_y] = file_handle.content[display_handle.center_y][..display_handle.center_x].to_string();
                     display_handle.center_x = 0;
                     display_handle.center_y += 1;

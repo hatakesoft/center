@@ -232,6 +232,7 @@ impl Display {
         let code_top = 2;
         let code_bottom = self.row - 2;
         let code_col = code_right - code_left;
+        #[warn(unused_variables)]
         let code_row = code_bottom - code_top;
         let code_left_num = self.center_x as isize - code_col as isize / 2 + if code_col % 2 == 0 { 1 } else { 0 };
         let code_right_num = self.center_x as isize + code_col as isize / 2;
