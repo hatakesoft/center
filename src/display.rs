@@ -232,8 +232,7 @@ impl Display {
         let code_top = 2;
         let code_bottom = self.row - 2;
         let code_col = code_right - code_left;
-        #[warn(unused_variables)]
-        let code_row = code_bottom - code_top;
+        let code_row = code_bottom - code_top; // will use it
         let code_left_num = self.center_x as isize - code_col as isize / 2 + if code_col % 2 == 0 { 1 } else { 0 };
         let code_right_num = self.center_x as isize + code_col as isize / 2;
         execute!(
@@ -381,7 +380,7 @@ impl Display {
         // bottom space
         if file_content.len() < code_bottom_num as usize {
             for _ in file_content.len()..code_bottom_num as usize {
-                self.theme.row_num.set();
+                self.theme.row_num.set()?;
                 for _ in 0..code_left {
                     print!(" ");
                 }
