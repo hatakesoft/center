@@ -19,11 +19,13 @@ const CMD_CENTER_RIGHT:              &str = "k";
 const CMD_CENTER_START_FILE:         &str = "I";
 const CMD_CENTER_START_LINE:         &str = "H";
 const CMD_CENTER_UP:                 &str = "i";
+const CMD_NEWLINE:                   &str = "n";
 const CMD_QUIT:                      &str = "q";
 const CMD_REPLACE:                   &str = "r";
 const CMD_THEME_CHANGE_TO_ONE_DARK:  &str = "t:one_dark";
 const CMD_THEME_CHANGE_TO_ONE_LIGHT: &str = "t:one_light";
 
+#[derive(Clone)]
 enum Mode {
     Append,
     Default,
@@ -136,10 +138,17 @@ impl Cmd {
                             display_handle.center_x = file_handle.content[display_handle.center_y].len() - 1;
                         }
                     }
+                } else if self.check(CMD_NEWLINE, key) {
+                    file_handle.content.insert(display_handle.center_y + 1, file_handle.content[display_handle.center_y][display.center_x..]);
+                    file_handle.content[display_handle.center_y] = file_handle.content[display_handle.center_y][..display_handle.center_x];
+                    display_handle.center_x = 0;
+                    display_handle.center_y += 1;
                 } else if self.check(CMD_QUIT, key) {
                     return false;
                 } else if self.check(CMD_REPLACE, key) {
-                    file_handle.content[display_handle.center_y][display_handle.center_x] = ' ';
+                    let mut row: Vec<char> = file_handle.content[display_handle.center_y].chars().collect();
+                    row[display_handle.center_x] = ' ';
+                    file_handle.content[display_handle.center_y] = row.into_iter().collect();
                     self.mode = Mode::Replace;
                 } else if self.check(CMD_THEME_CHANGE_TO_ONE_DARK, key) {
                     display_handle.theme = display::Theme::one_dark();
@@ -153,7 +162,9 @@ impl Cmd {
                     self.buffer.push(key);
                     self.history += &self.buffer;
                 } else {
-                    file_handle.content[display_handle.center_y][display_handle.center_x] = key;
+                    let mut row: Vec<char> = file_handle.content[display_handle.center_y].chars().collect();
+                    row[display_handle.center_x] = key;
+                    file_handle.content[display_handle.center_y] = row.into_iter().collect();
                     self.buffer.push(key);
                     self.history += &self.buffer;
                 }

@@ -49,7 +49,7 @@ fn main() -> io::Result<()> {
             event::Event::Key(key) => {
                 match key.code {
                     event::KeyCode::Char(kc) => {
-                        if cmd.key(kc, &mut display_handle, &file_handle) == false {
+                        if cmd.key(kc, &mut display_handle, &mut file_handle) == false {
                             break;
                         }
                     }
